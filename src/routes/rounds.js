@@ -21,7 +21,7 @@ router.get('/rounds/draw', async (ctx, next) => {
   const rounds = ctx.tournament.rounds;
   const lastRound = rounds.length > 0 ? rounds[rounds.length - 1] : null;
 
-  if (lastRound && !lastRound.finished) {
+  if (lastRound && !allPairingsHasResults(lastRound)) {
     ctx.response.status = 400;
     ctx.response.body = {message: 'Previous round has not finished'};
     return;
@@ -36,6 +36,7 @@ router.get('/rounds/draw', async (ctx, next) => {
     pairings: pairings
   });
 
+  ctx.tournament.rounds[rounds.length - 1].finished = true;
   ctx.tournament.rounds.push(round);
   await ctx.tournament.save();
 
@@ -79,15 +80,13 @@ router.put('/rounds/:roundId/pairing/:pairingId', async (ctx, next) => {
     pairing.handicap = ctx.request.body.handicap
   }
 
-  if (round.pairings.every((p) => p.result !== null)) {
-    round.finished = true;
-  } else {
-    round.finished = false;
-  }
-
   ctx.tournament.save();
   ctx.response.body = ctx.tournament.rounds;
 
 });
+
+function allPairingsHasResults(round) {
+  return round.pairings.every((p) => p.result !== null);
+}
 
 export default router;

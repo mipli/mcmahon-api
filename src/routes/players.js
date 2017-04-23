@@ -7,9 +7,14 @@ router.post('/players', async (ctx, next) => {
   const data = ctx.request.body;
   const player = new PlayerModel(data);
 
-  const t = await player.save();
+  const newPlayer = await player.save();
 
-  ctx.response.body = t;
+  if (ctx.tournament) {
+    ctx.tournament.players.push(newPlayer);
+    await ctx.tournament.save();
+  }
+
+  ctx.response.body = newPlayer;
 });
 
 router.put('/players/:id', async (ctx, next) => {
@@ -28,6 +33,7 @@ router.put('/players/:id', async (ctx, next) => {
   }
 
   const updatedPlayer = await PlayerModel.findOne({_id: id});
+
   ctx.response.body = updatedPlayer;
 });
 
