@@ -22,11 +22,11 @@ router.get('/tournaments/:tournamentId', async (ctx, next) => {
 
 router.post('/tournaments/:tournamentId/players', async (ctx, next) => {
   const data = ctx.request.body;
-  if (!data.players) {
+  if (!data) {
     ctx.response.status = 400;
     return;
   }
-  data.players.forEach((player) => {
+  data.forEach((player) => {
     ctx.tournament.players.push(player);
   });
   const t = await ctx.tournament.save();
@@ -51,6 +51,23 @@ router.put('/tournaments/:tournamentId/players/:playerId', async (ctx, next) => 
 
   const t = await ctx.tournament.save();
   ctx.response.body = t;
+});
+
+router.delete('/tournaments/:tournamentId/players/:playerId', async (ctx, next) => {
+  const index = ctx.tournament.players.findIndex((player) => String(player._id) === ctx.params.playerId);
+  if (index === -1) {
+    ctx.response.status = 400;
+    ctx.response.body = "Could not find player with id: " + ctx.params.playerId;
+    return;
+  }
+  ctx.tournament.players.splice(index, 1);
+
+  const t = await ctx.tournament.save();
+  ctx.response.body = t;
+});
+
+router.get('/tournaments/:tournamentId/players', async (ctx, next) => {
+  ctx.response.body = ctx.tournament.players;
 });
 
 export default router

@@ -1,6 +1,10 @@
-export const createPairing = function(players) {
+export const createPairing = function(_players) {
+  if (_players.length === 0) {
+    return [];
+  }
+  const players = _players.slice();
   const pairings = [];
-  let playerA = players.pop();
+  let playerA = players.shift();
   while (playerA) {
     const pairing = {
       black: null,
@@ -8,7 +12,7 @@ export const createPairing = function(players) {
       result: null,
       handicap: 0
     };
-    const playerB = players.length > 0 ? players.pop() : null;
+    const playerB = players.length > 0 ? players.shift() : null;
     const draw = nigiri(playerA, playerB);
     pairing.black = draw.black;
     pairing.white = draw.white;
