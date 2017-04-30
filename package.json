@@ -25,7 +25,7 @@
     "start": "node server.js",
     "watch": "nodemon --exec npm run start",
     "build": "babel src -d build",
-    "test": "mocha --require 'babel-polyfill' --compilers js:babel-register src/**/*.test.js"
+    "test": "NODE_ENV=test mocha --require 'babel-polyfill' --compilers js:babel-register src/**/*.test.js"
   },
   "babel": {
     "presets": [

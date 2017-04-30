@@ -17,7 +17,9 @@ router.post('/tournaments', async (ctx, next) => {
 });
 
 router.get('/tournaments/:tournamentId', async (ctx, next) => {
-  ctx.response.body = ctx.tournament;
+  const tournament = await TournamentModel.findOne({_id: ctx.params.tournamentId});
+
+  ctx.response.body = tournament;
 });
 
 router.post('/tournaments/:tournamentId/players', async (ctx, next) => {
