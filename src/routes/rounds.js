@@ -36,9 +36,9 @@ router.get('/rounds/draw', async (ctx, next) => {
     pairings: pairings
   });
 
-  console.log('p1', ctx.tournament.players);
-
-  ctx.tournament.rounds[rounds.length - 1].finished = true;
+  if (lastRound) {
+    lastRound.finished = true;
+  }
   ctx.tournament.rounds.push(round);
   await ctx.tournament.save();
   console.log('p2', ctx.tournament.players);
@@ -57,9 +57,7 @@ router.get('/rounds/redraw', async (ctx, next) => {
   }
 
   const players = ctx.tournament.players;
-  console.log(players);
   const pairings = Pairer.createPairing(players);
-  console.log(pairings);
 
   const round = new RoundModel({
     number: lastRound.number,

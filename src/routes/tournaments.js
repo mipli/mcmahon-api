@@ -67,7 +67,7 @@ router.delete('/tournaments/:tournamentId/players/:playerId', async (ctx, next) 
 });
 
 router.get('/tournaments/:tournamentId/players', async (ctx, next) => {
-  ctx.response.body = ctx.tournament.players;
+  ctx.response.body = ctx.tournament ? ctx.tournament.players : [];
 });
 
 export default router
